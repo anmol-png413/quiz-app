@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #43cea2, #185a9d);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .quiz-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      backdrop-filter: blur(8px);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .quiz-header {
+      margin-bottom: 20px;
+    }
+
+    .quiz-header h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .options {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .options li {
+      margin-bottom: 12px;
+    }
+
+    .options input {
+      margin-right: 10px;
+    }
+
+    button {
+      background-color: #00c9ff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0078aa;
+    }
+
+    .result {
+      text-align: center;
+    }
+
+    .result h2 {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .quiz-header h2 {
+        font-size: 20px;
+      }
+
+      button {
+        width: 100%;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-header">
+      <h2 id="question">Question Text</h2>
+      <ul class="options">
+        <li><label><input type="radio" name="answer" class="answer" value="a" /> <span id="a_text">Option A</span></label></li>
+        <li><label><input type="radio" name="answer" class="answer" value="b" /> <span id="b_text">Option B</span></label></li>
+        <li><label><input type="radio" name="answer" class="answer" value="c" /> <span id="c_text">Option C</span></label></li>
+        <li><label><input type="radio" name="answer" class="answer" value="d" /> <span id="d_text">Option D</span></label></li>
+      </ul>
+    </div>
+    <button onclick="submitAnswer()">Submit</button>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is the capital of India?",
+        a: "Delhi",
+        b: "Mumbai",
+        c: "Bangalore",
+        d: "Chennai",
+        correct: "a"
+      },
+      {
+        question: "Which language is used for web apps?",
+        a: "Python",
+        b: "JavaScript",
+        c: "C++",
+        d: "Java",
+        correct: "b"
+      },
+      {
+        question: "What does HTML stand for?",
+        a: "HyperText Marking Language",
+        b: "Hyper Tool Markup Language",
+        c: "HyperText Markup Language",
+        d: "HighText Machine Language",
+        correct: "c"
+      },
+      {
+        question: "Which year was JavaScript created?",
+        a: "1990",
+        b: "1995",
+        c: "2000",
+        d: "2005",
+        correct: "b"
+      }
+    ];
+
+    const quiz = document.getElementById("quiz");
+    const questionEl = document.getElementById("question");
+    const answerEls = document.querySelectorAll(".answer");
+    const a_text = document.getElementById("a_text");
+    const b_text = document.getElementById("b_text");
+    const c_text = document.getElementById("c_text");
+    const d_text = document.getElementById("d_text");
+
+    let currentQuiz = 0;
+    let score = 0;
+
+    loadQuiz();
+
+    function loadQuiz() {
+      deselectAnswers();
+      const currentQuizData = quizData[currentQuiz];
+      questionEl.innerText = currentQuizData.question;
+      a_text.innerText = currentQuizData.a;
+      b_text.innerText = currentQuizData.b;
+      c_text.innerText = currentQuizData.c;
+      d_text.innerText = currentQuizData.d;
+    }
+
+    function getSelected() {
+      let answer;
+      answerEls.forEach(el => {
+        if (el.checked) {
+          answer = el.value;
+        }
+      });
+      return answer;
+    }
+
+    function deselectAnswers() {
+      answerEls.forEach(el => el.checked = false);
+    }
+
+    function submitAnswer() {
+      const answer = getSelected();
+      if (answer) {
+        if (answer === quizData[currentQuiz].correct) {
+          score++;
+        }
+        currentQuiz++;
+        if (currentQuiz < quizData.length) {
+          loadQuiz();
+        } else {
+          quiz.innerHTML = `
+            <div class="result">
+              <h2>🎉 You answered ${score}/${quizData.length} correctly!</h2>
+              <button onclick="location.reload()">Restart Quiz</button>
+            </div>
+          `;
+        }
+      } else {
+        alert("Please select an answer before submitting.");
+      }
+    }
+  </script>
+</body>
+</html>
